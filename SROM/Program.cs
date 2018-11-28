@@ -10,12 +10,19 @@ namespace SROM
     {
         static void Main(string[] args)
         {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-            Console.WriteLine("Hello World!");
-            Console.ReadKey();
+            //var a = "AAAAAA";
+            //var b = "DDDDDDDDDD";
+            //var c = Calc.LongAdd(a, b);
+            //string a1, b1;
+            //Num.LengthControle(a, b, out a1, out b1);
+            var a = Num.Conv("AAAAAA");
+            var b = Num.Conv("0");
+            b = a;
 
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+
+            Console.WriteLine(Num.ReConv(b));
+            Console.ReadLine();
+
         }
     }
 }
