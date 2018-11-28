@@ -8,8 +8,7 @@ namespace SROM
 {
     class Calc
     {
-       
-
+        
         static UInt64[] LongAddInternal(UInt64[] a, UInt64[] b)
         {
 
@@ -127,9 +126,9 @@ namespace SROM
 
         static UInt64[] LongMulInternal(UInt64[] a, UInt64[] b)
         {
-            UInt64[] C = new UInt64[(a.Length) * 2];
+            UInt64[] C = new UInt64[(a.Length)];
             UInt64[] temp;
-            for (int i = 0; i < a.Length; i++)
+            for (int i = 0; i < b.Length; i++)
             {
                 temp = LongMulODInternal(a, b[i]);
                 temp = LongShiftDigitsToHigh(temp, i);
@@ -140,10 +139,10 @@ namespace SROM
 
         public static string LongMul(string hex1, string hex2)
         {
-            string hex1_, hex2_;
-            Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
-            var a = Num.Conv(hex1_);
-            var b = Num.Conv(hex2_);
+            //string hex1_, hex2_;
+            //Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
+            var a = Num.Conv(hex1);
+            var b = Num.Conv(hex2);
             if ((hex2 == "0") || (hex1 == "0"))
             {
                 return "0";
@@ -240,5 +239,31 @@ namespace SROM
             }
         }
 
+        static UInt64[] LongWPowInernal(UInt64[] a, UInt64[] b)
+        {
+            var C = Num.Conv("1");
+            UInt64[][] D = new UInt64[16][];
+            D[0] = Num.Conv("1");
+            D[1] = a;
+            for (int i = 2; i < 16; i++)
+                D[i] = Calc.LongMulInternal(D[i - 1], a);
+            for(int i = b.Length-2; i >=0; i--)
+            {
+                C = Calc.LongMulInternal(C, D[b[i]]);
+                if (i != 0)
+                    for (int k = 1; k < 4; k++)
+                        C = Calc.LongMulInternal(C, C);
+            }
+            return C;
+        } 
+         public static string LongWPow(string hex1, string hex2)
+        {
+            //string hex1_, hex2_;
+            //Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
+            var a = Num.Conv(hex1);
+            var b = Num.Conv(hex2);
+            var c = Calc.LongWPowInernal(a, b);
+            return Num.ReConv(c);
+        }
     }
 }

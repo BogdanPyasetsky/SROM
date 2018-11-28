@@ -10,17 +10,13 @@ namespace SROM
     {
         static void Main(string[] args)
         {
-            //var a = "AAAAAA";
-            //var b = "DDDDDDDDDD";
-            //var c = Calc.LongAdd(a, b);
-            //string a1, b1;
-            //Num.LengthControle(a, b, out a1, out b1);
-            var a = Num.Conv("AAAAAA");
-            var b = Num.Conv("0");
-            b = a;
 
+            var a = Num.Conv("3333");
+            var b = Num.Conv("2");
+            var c = Calc.LongWPow("3333", "2");
 
-            Console.WriteLine(Num.ReConv(b));
+            Console.WriteLine(c);
+
             Console.ReadLine();
 
         }
