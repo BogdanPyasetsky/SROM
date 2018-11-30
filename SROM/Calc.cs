@@ -178,14 +178,15 @@ namespace SROM
             int t = b / 32;
             int s = b - t * 32;
             UInt64 n, carry = 0;
-            UInt64[] C = new UInt64[a.Length + t];
+            UInt64[] C = new UInt64[a.Length + t + 1];
             for (int i = 0; i < a.Length; i++)
             {
                 n = a[i];
                 n = n << s;
-                C[i + t] = (n & 0xFFFFFFFF) + carry;
+                C[i + t] = (n & 0xFFFFFFFF) | carry;
                 carry = (n & 0xFFFFFFFF00000000) >> 32;
             }
+            C[a.Length + t] = carry;
             return C;
         }
 
@@ -246,24 +247,28 @@ namespace SROM
             D[0] = Num.Conv("1");
             D[1] = a;
             for (int i = 2; i < 16; i++)
-                D[i] = Calc.LongMulInternal(D[i - 1], a);
-            for(int i = b.Length-2; i >=0; i--)
+                D[i] = LongMulInternal(D[i - 1], a);
+            string B = Num.ReConv(b);
+            for(int i = 0; i < B.Length; i++)
             {
-                C = Calc.LongMulInternal(C, D[b[i]]);
-                if (i != 0)
-                    for (int k = 1; k < 4; k++)
-                        C = Calc.LongMulInternal(C, C);
+                C = LongMulInternal(C, D[Num.SymbToInt(B[i])]);
+                if (i != (B.Length-1))
+                    for (int k = 1; k <= 4; k++)
+                        C = LongMulInternal(C, C);
             }
             return C;
         } 
          public static string LongWPow(string hex1, string hex2)
         {
-            //string hex1_, hex2_;
-            //Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
+            string hex1_, hex2_;
+            Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
             var a = Num.Conv(hex1);
             var b = Num.Conv(hex2);
-            var c = Calc.LongWPowInernal(a, b);
-            return Num.ReConv(c);
+            var c = LongWPowInernal(a, b);
+            var v = Num.ReConv(c);
+            if (v == "")
+                return "0";
+            return v;
         }
     }
 }
