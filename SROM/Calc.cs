@@ -33,7 +33,7 @@ namespace SROM
             return Num.ReConv(C);
         }
 
-        static int LongCmpInternal(UInt64[] a, UInt64[] b)
+        public static int LongCmpInternal(UInt64[] a, UInt64[] b)
         {
             int i = a.Length - 1;
             while (a[i] == b[i])
@@ -58,7 +58,7 @@ namespace SROM
             return C;
         }
 
-        static UInt64[] LongSubInternal(UInt64[] a, UInt64[] b)
+        public static UInt64[] LongSubInternal(UInt64[] a, UInt64[] b)
         {
             UInt64[] C = new UInt64[a.Length];
             UInt64 temp, borrow = 0;

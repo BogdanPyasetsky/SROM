@@ -23,10 +23,24 @@ namespace SROM
             }
             while ((aTemp[0] & 0x1) == 0)
                 aTemp = Calc.LongShiftBitsToLow(aTemp, 1);
-            while ( Num.ReConv(b) != "")
+            while (Num.ReConv(b) != "")
+            {
                 while ((bTemp[0] & 0x1) == 0)
                     bTemp = Calc.LongShiftBitsToLow(bTemp, 1);
-
+                var cmpVar = Calc.LongCmpInternal(aTemp, bTemp);
+                UInt64[] min, max;
+                if (cmpVar >= 0)
+                {
+                    min = bTemp;
+                    max = aTemp;
+                }
+                else
+                {
+                    min = aTemp;
+                    max = bTemp;
+                }
+                GCD(min, Calc.LongSubInternal(max, min));
+            }
             d = Calc.LongMulInternal(d, aTemp);
             return d;
         }
