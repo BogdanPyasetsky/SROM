@@ -124,7 +124,7 @@ namespace SROM
             return C;
         }
 
-        static UInt64[] LongMulInternal(UInt64[] a, UInt64[] b)
+        public static UInt64[] LongMulInternal(UInt64[] a, UInt64[] b)
         {
             UInt64[] C = new UInt64[(a.Length)];
             UInt64[] temp;
@@ -187,6 +187,26 @@ namespace SROM
                 carry = (n & 0xFFFFFFFF00000000) >> 32;
             }
             C[a.Length + t] = carry;
+            return C;
+        }
+
+        public static UInt64[] LongShiftBitsToLow(UInt64[] a, int b)
+        {
+            int t = b / 32;
+            int s = b - t * 32;
+            UInt64 n, nn, carry = 0;
+            UInt64[] C = new UInt64[a.Length - t];
+            for (int i = t; i < a.Length-1; i++)
+            {
+                n = a[i];
+                nn = a[i + 1];
+                n = n >> s;
+                nn = nn << (64 - s);
+                nn = nn >> (64 - s);
+                carry = nn;
+                C[i - t] = n | (carry << 32 - s);
+            }
+            C[a.Length - 1 - t] = a[a.Length - 1] >> s;
             return C;
         }
 
@@ -260,15 +280,20 @@ namespace SROM
         } 
          public static string LongWPow(string hex1, string hex2)
         {
-            string hex1_, hex2_;
-            Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
-            var a = Num.Conv(hex1);
-            var b = Num.Conv(hex2);
-            var c = LongWPowInernal(a, b);
-            var v = Num.ReConv(c);
-            if (v == "")
+            //string hex1_, hex2_;
+            //Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
+            if (hex1 == "1")
+                return "1";
+            if (hex1 == "0")
                 return "0";
-            return v;
+            else
+            {
+                var a = Num.Conv(hex1);
+                var b = Num.Conv(hex2);
+                var c = LongWPowInernal(a, b);
+                return Num.ReConv(c);
+            }
+            
         }
     }
 }
