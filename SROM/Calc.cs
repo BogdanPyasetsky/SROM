@@ -124,6 +124,16 @@ namespace SROM
             return C;
         }
 
+        public static UInt64[] RemoveHighZeros(UInt64[] a)
+        {
+            int i = a.Length - 1;
+            while (a[i] == 0)
+                i--;
+            UInt64[] res = new UInt64[i + 1];
+            Array.Copy(a, res, i + 1);
+            return res;
+        }
+
         public static UInt64[] LongMulInternal(UInt64[] a, UInt64[] b)
         {
             UInt64[] C = new UInt64[(a.Length)];
@@ -134,6 +144,7 @@ namespace SROM
                 temp = LongShiftDigitsToHigh(temp, i);
                 C = LongAddInternal(C, temp);
             }
+            
             return C;
         }
 
@@ -251,11 +262,11 @@ namespace SROM
                 UInt64[] r;
                 var c = LongDivInternal(a, b, out r);
                 hex3 = Num.ReConv(r);
-                if (hex3 == "")
-                    hex3 = "0";
+                //if (hex3 == "")
+                    //hex3 = "0";
                 var c1 = Num.ReConv(c);
-                if (c1 == "")
-                    c1 = "0";
+                //if (c1 == "")
+                    //c1 = "0";
                 return c1;
             }
         }
@@ -267,7 +278,10 @@ namespace SROM
             D[0] = Num.Conv("1");
             D[1] = a;
             for (int i = 2; i < 16; i++)
+            {
                 D[i] = LongMulInternal(D[i - 1], a);
+                D[i] = RemoveHighZeros(D[i]);
+            }
             string B = Num.ReConv(b);
             for(int i = 0; i < B.Length; i++)
             {

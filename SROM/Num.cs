@@ -54,7 +54,8 @@ namespace SROM
                     while (g.Length < 8);
                 G = g + G;
             }
-            return G.TrimStart('0');
+            var r = G.TrimStart('0');
+            return string.IsNullOrEmpty(r) ? "0" : r;
         }
 
         public static int SymbToInt(char a)

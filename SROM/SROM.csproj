@@ -48,6 +48,7 @@
     <Compile Include="Calc.cs" />
     <Compile Include="CalcTest.cs" />
     <Compile Include="ModCalc.cs" />
+    <Compile Include="ModCalcTest.cs" />
     <Compile Include="Num.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

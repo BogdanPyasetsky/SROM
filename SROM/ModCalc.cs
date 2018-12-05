@@ -9,7 +9,7 @@ namespace SROM
     class ModCalc
     {
 
-        static UInt64[] GCD(UInt64[] a, UInt64[] b)
+        static UInt64[] GCDInternal(UInt64[] a, UInt64[] b)
         {
             UInt64[] d = new UInt64[Math.Min(a.Length, b.Length)];
             d = Num.Conv("1");
@@ -23,11 +23,11 @@ namespace SROM
             }
             while ((aTemp[0] & 0x1) == 0)
                 aTemp = Calc.LongShiftBitsToLow(aTemp, 1);
-            while (Num.ReConv(b) != "")
+            while (Num.ReConv(bTemp) != "0")
             {
                 while ((bTemp[0] & 0x1) == 0)
                     bTemp = Calc.LongShiftBitsToLow(bTemp, 1);
-                var cmpVar = Calc.LongCmpInternal(aTemp, bTemp);
+                var cmpVar = Calc.LongCmp(Num.ReConv(aTemp), Num.ReConv(bTemp));
                 UInt64[] min, max;
                 if (cmpVar >= 0)
                 {
@@ -39,10 +39,19 @@ namespace SROM
                     min = aTemp;
                     max = bTemp;
                 }
-                GCD(min, Calc.LongSubInternal(max, min));
+                aTemp = min;
+                bTemp = Num.Conv(Calc.LongSub(Num.ReConv(max), Num.ReConv(min)));
             }
             d = Calc.LongMulInternal(d, aTemp);
             return d;
+        }
+
+        public static string GCD(string hex1, string hex2)
+        {
+            var a = Num.Conv(hex1);
+            var b = Num.Conv(hex2);
+            var c = GCDInternal(a, b);
+            return Num.ReConv(c);
         }
     }
 }
