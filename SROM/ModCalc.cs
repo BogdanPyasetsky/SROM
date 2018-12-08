@@ -119,11 +119,45 @@ namespace SROM
             return Mod(res, hex3);
         }
 
+
+        static UInt64[] LongWPowInernal(UInt64[] a, UInt64[] b, string hex3)
+        {
+            var C = Num.Conv("1");
+            string dTemp, cTemp;
+            UInt64[][] D = new UInt64[16][];
+            D[0] = Num.Conv("1");
+            D[1] = a;
+            for (int i = 2; i < 16; i++)
+            {
+                dTemp = Calc.LongMul(Num.ReConv(D[i - 1]), Num.ReConv(a));
+                //dTemp = Mod(dTemp, hex3);
+                D[i] = Num.Conv(dTemp);
+                D[i] = Calc.RemoveHighZeros(D[i]);
+            }
+            string B = Num.ReConv(b);
+            for (int i = 0; i < B.Length; i++)
+            {
+                cTemp = Calc.LongMul(Num.ReConv(C), Num.ReConv(D[Num.SymbToInt(B[i])]));
+                cTemp = Mod(cTemp, hex3);
+                if (i != (B.Length - 1))
+                    for (int k = 1; k <= 4; k++)
+                    {
+                        cTemp = Calc.LongMul(cTemp, cTemp);
+                        cTemp = Mod(cTemp, hex3);
+                    }
+                C = Num.Conv(cTemp);
+            }
+            return C;
+        }
+      
         public static string LongModWPow(string hex1, string hex2, string hex3)
         {
             var hex1_ = Mod(hex1, hex3);
-            var res = Calc.LongWPow(hex1_, hex2);
-            return Mod(res, hex3);
+            var a = Num.Conv(hex1_);
+            var b = Num.Conv(hex2);
+            var res = LongWPowInernal(a, b, hex3);
+            var res_ = Num.ReConv(res);
+            return Mod(res_, hex3);
         }
     }
 }

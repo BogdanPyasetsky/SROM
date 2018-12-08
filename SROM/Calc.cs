@@ -269,26 +269,31 @@ namespace SROM
         static UInt64[] LongWPowInernal(UInt64[] a, UInt64[] b)
         {
             var C = Num.Conv("1");
+            string dTemp, cTemp;
             UInt64[][] D = new UInt64[16][];
             D[0] = Num.Conv("1");
             D[1] = a;
             for (int i = 2; i < 16; i++)
             {
-                D[i] = LongMulInternal(D[i - 1], a);
+                dTemp = LongMul(Num.ReConv(D[i - 1]), Num.ReConv(a));
+                D[i] = Num.Conv(dTemp);
                 D[i] = RemoveHighZeros(D[i]);
             }
             string B = Num.ReConv(b);
             for(int i = 0; i < B.Length; i++)
             {
-                C = LongMulInternal(C, D[Num.SymbToInt(B[i])]);
-                
-                if (i != (B.Length-1))
+                cTemp = LongMul(Num.ReConv(C), Num.ReConv(D[Num.SymbToInt(B[i])]));
+                if (i != (B.Length - 1))
                     for (int k = 1; k <= 4; k++)
-                        C = LongMulInternal(C, C);
+                    {
+                        cTemp = LongMul(cTemp, cTemp);
+                    }
+                C = Num.Conv(cTemp);
             }
             return C;
         } 
-         public static string LongWPow(string hex1, string hex2)
+
+        public static string LongWPow(string hex1, string hex2)
         {
             if (hex1 == "1")
                 return "1";
