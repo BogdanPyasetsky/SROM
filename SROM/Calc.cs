@@ -33,7 +33,7 @@ namespace SROM
             return Num.ReConv(C);
         }
 
-        public static int LongCmpInternal(UInt64[] a, UInt64[] b)
+        static int LongCmpInternal(UInt64[] a, UInt64[] b)
         {
             int i = a.Length - 1;
             while (a[i] == b[i])
@@ -58,7 +58,7 @@ namespace SROM
             return C;
         }
 
-        public static UInt64[] LongSubInternal(UInt64[] a, UInt64[] b)
+        static UInt64[] LongSubInternal(UInt64[] a, UInt64[] b)
         {
             UInt64[] C = new UInt64[a.Length];
             UInt64 temp, borrow = 0;
@@ -134,15 +134,17 @@ namespace SROM
             return res;
         }
 
-        public static UInt64[] LongMulInternal(UInt64[] a, UInt64[] b)
+        static UInt64[] LongMulInternal(UInt64[] a, UInt64[] b)
         {
             UInt64[] C = new UInt64[(a.Length)];
             UInt64[] temp;
+            string Tp;
             for (int i = 0; i < b.Length; i++)
             {
                 temp = LongMulODInternal(a, b[i]);
                 temp = LongShiftDigitsToHigh(temp, i);
-                C = LongAddInternal(C, temp);
+                Tp = LongAdd(Num.ReConv(C), Num.ReConv(temp));
+                C = Num.Conv(Tp); 
             }
             
             return C;
@@ -150,8 +152,6 @@ namespace SROM
 
         public static string LongMul(string hex1, string hex2)
         {
-            //string hex1_, hex2_;
-            //Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
             var a = Num.Conv(hex1);
             var b = Num.Conv(hex2);
             if ((hex2 == "0") || (hex1 == "0"))
@@ -251,7 +251,6 @@ namespace SROM
             Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
             var a = Num.Conv(hex1_);
             var b = Num.Conv(hex2_);
-            //string hex3;
             if (hex2 == "0")
             {
                 hex3 = "0";
@@ -262,11 +261,7 @@ namespace SROM
                 UInt64[] r;
                 var c = LongDivInternal(a, b, out r);
                 hex3 = Num.ReConv(r);
-                //if (hex3 == "")
-                    //hex3 = "0";
                 var c1 = Num.ReConv(c);
-                //if (c1 == "")
-                    //c1 = "0";
                 return c1;
             }
         }
@@ -286,6 +281,7 @@ namespace SROM
             for(int i = 0; i < B.Length; i++)
             {
                 C = LongMulInternal(C, D[Num.SymbToInt(B[i])]);
+                
                 if (i != (B.Length-1))
                     for (int k = 1; k <= 4; k++)
                         C = LongMulInternal(C, C);
@@ -294,8 +290,6 @@ namespace SROM
         } 
          public static string LongWPow(string hex1, string hex2)
         {
-            //string hex1_, hex2_;
-            //Num.LengthControle(hex1, hex2, out hex1_, out hex2_);
             if (hex1 == "1")
                 return "1";
             if (hex1 == "0")
